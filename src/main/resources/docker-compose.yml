@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres:14
     environment:
       POSTGRES_USER: marbl_u
       POSTGRES_PASSWORD: marbl_psw

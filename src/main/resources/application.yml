@@ -1,15 +1,17 @@
 spring:
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    driver-class-name: org.postgresql.Driver
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
-
   data:
     redis:
       host: ${REDIS_HOST}
