@@ -1,0 +1,12 @@
+POSTGRES_URL: jdbc:postgresql://localhost:5432/marbl
+POSTGRES_USER: marbl_u
+POSTGRES_PASSWORD: marbl_psw
+
+REDIS_HOST: localhost
+REDIS_PORT: 6379
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
