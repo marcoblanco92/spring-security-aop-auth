@@ -1,5 +1,6 @@
-package com.marbl.spring_security_aop_auth.entity;
+package com.marbl.spring_security_aop_auth.entity.user;
 
+import com.marbl.spring_security_aop_auth.entity.role.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@Table(schema = "auth", name = "users")
 public class Users implements Serializable {
 
     @Id
@@ -22,17 +24,15 @@ public class Users implements Serializable {
     @Column(unique = true, nullable = false, updatable = false)
     private String username;
     @Column(unique = true)
-    @Email(regexp = ".+@.+\\..+", flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Email(message = "Invalid email format")
     private String email;
     @Column(name = "password_hash", nullable = false)
     @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$",
-            message = "Password must be at least 8 characters long and contain at least one uppercase letter and one special character"
+            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$",
+            message = "Password must be at least 8 characters long, contain uppercase, lowercase, number, and special character"
     )
     private String password;
     @Column(nullable = false)
-    private String salt;
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean enabled = Boolean.TRUE;
     @Column(columnDefinition = "INTEGER DEFAULT 0")
     private int failedAttempts;
