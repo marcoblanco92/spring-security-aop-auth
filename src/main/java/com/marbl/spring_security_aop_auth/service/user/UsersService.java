@@ -1,4 +1,4 @@
-package com.marbl.spring_security_aop_auth.service;
+package com.marbl.spring_security_aop_auth.service.user;
 
 import com.marbl.spring_security_aop_auth.dto.user.RegisterUserDto;
 import com.marbl.spring_security_aop_auth.entity.role.Roles;

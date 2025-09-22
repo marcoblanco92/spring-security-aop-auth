@@ -1,5 +1,6 @@
 package com.marbl.spring_security_aop_auth.mapper.user;
 
+import com.marbl.spring_security_aop_auth.dto.user.LoginRequestDto;
 import com.marbl.spring_security_aop_auth.dto.user.RegisterUserDto;
 import com.marbl.spring_security_aop_auth.entity.user.Users;
 import org.mapstruct.Mapper;
@@ -13,5 +14,8 @@ public interface UsersMapper {
 
     @Mapping(target = "password", ignore = true)
     Users toEntity(RegisterUserDto dto);
+
+    @Mapping(target = "password", ignore = true)
+    Users toEntity(LoginRequestDto dto);
 
 }

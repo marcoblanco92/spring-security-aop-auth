@@ -1,5 +1,6 @@
 package com.marbl.spring_security_aop_auth.utils;
 
+import com.marbl.spring_security_aop_auth.dto.user.LoginRequestDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +15,8 @@ public final class PrivacyUtils {
      * @return masked email
      */
     public static String maskEmail(String email) {
-        if (email == null || !email.contains("@")) return "invalid email";
+        if (email == null) return null;
+        if (!email.contains("@")) return "invalid email";
 
         String[] parts = email.split("@");
         String name = parts[0];
@@ -24,11 +26,22 @@ public final class PrivacyUtils {
         if (name.length() <= 2) {
             maskedName = "**"; // short names are fully masked
         } else {
-            maskedName = name.charAt(0) 
+            maskedName = name.charAt(0)
                     + "*".repeat(name.length() - 2)  // mask middle characters
                     + name.charAt(name.length() - 1); // keep first and last
         }
 
         return maskedName + "@" + domain;
+    }
+
+    public static String maskSensitive(LoginRequestDto dto) {
+        if (dto.getEmail() != null) return maskEmail(dto.getEmail());
+        if (dto.getUsername() != null) return maskUsername(dto.getUsername());
+        return "unknown";
+    }
+
+    public static String maskUsername(String username) {
+        if (username == null || username.length() < 3) return "***";
+        return username.substring(0, 2) + "***";
     }
 }

@@ -1,7 +1,7 @@
 package com.marbl.spring_security_aop_auth.controller.user;
 
 import com.marbl.spring_security_aop_auth.dto.user.RegisterUserDto;
-import com.marbl.spring_security_aop_auth.service.UsersService;
+import com.marbl.spring_security_aop_auth.service.user.UsersService;
 import com.marbl.spring_security_aop_auth.utils.PrivacyUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
