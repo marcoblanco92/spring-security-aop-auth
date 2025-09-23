@@ -1,5 +1,6 @@
 package com.marbl.spring_security_aop_auth.controller.user;
 
+import com.marbl.spring_security_aop_auth.controller.BaseController;
 import com.marbl.spring_security_aop_auth.dto.user.RegisterUserDto;
 import com.marbl.spring_security_aop_auth.service.user.UsersService;
 import com.marbl.spring_security_aop_auth.utils.PrivacyUtils;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UsersController {
+public class UsersController extends BaseController {
 
     private final UsersService usersService;
 

@@ -1,5 +1,6 @@
-package com.marbl.spring_security_aop_auth.exception;
+package com.marbl.spring_security_aop_auth.exception.handler;
 
+import com.marbl.spring_security_aop_auth.exception.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

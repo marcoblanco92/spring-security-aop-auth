@@ -5,13 +5,16 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 
 @Component
-public class JwtUtil {
+public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -52,5 +55,12 @@ public class JwtUtil {
         return validateToken(token).getExpiresAt().before(new Date());
     }
 
+    public Authentication getAuthentication(String token) {
+        String username = getSubject(token);
+        List<SimpleGrantedAuthority> authorities = getRoles(token).stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+        return new UsernamePasswordAuthenticationToken(username, null, authorities);
+    }
 
 }

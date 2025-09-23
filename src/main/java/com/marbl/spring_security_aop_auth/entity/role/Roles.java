@@ -21,7 +21,4 @@ public class Roles implements Serializable {
     @Column(unique = true, nullable = false, name = "name")
     private RolesEnum roleName;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<Users> users = new HashSet<>();
-
 }

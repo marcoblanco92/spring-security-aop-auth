@@ -1,5 +1,6 @@
-package com.marbl.spring_security_aop_auth.exception;
+package com.marbl.spring_security_aop_auth.exception.handler;
 
+import com.marbl.spring_security_aop_auth.exception.InvalidAuthorizationHeaderException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class SecurityExceptionHandler {
@@ -39,5 +41,11 @@ public class SecurityExceptionHandler {
     public ResponseEntity<Map<String, String>> handleCredentialsExpired(CredentialsExpiredException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", "Credentials expired"));
+    }
+
+    @ExceptionHandler(InvalidAuthorizationHeaderException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidAuthHeader(InvalidAuthorizationHeaderException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", Objects.requireNonNull(ex.getReason())));
     }
 }

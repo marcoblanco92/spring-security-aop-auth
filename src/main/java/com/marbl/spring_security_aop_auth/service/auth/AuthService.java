@@ -3,7 +3,8 @@ package com.marbl.spring_security_aop_auth.service.auth;
 import com.marbl.spring_security_aop_auth.dto.auth.LoginRequestDto;
 import com.marbl.spring_security_aop_auth.entity.user.Users;
 import com.marbl.spring_security_aop_auth.repository.user.UsersRepository;
-import com.marbl.spring_security_aop_auth.utils.jwt.JwtUtil;
+import com.marbl.spring_security_aop_auth.service.blacklist.TokenBlacklistService;
+import com.marbl.spring_security_aop_auth.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,9 +25,11 @@ import static com.marbl.spring_security_aop_auth.utils.PrivacyUtils.maskUsername
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UsersRepository usersRepository;
     private final AuthenticationManager authenticationManager;
+    private final TokenBlacklistService tokenBlacklistService;
+
 
     public UserDetails authenticate(LoginRequestDto loginRequestDto) {
         try {
@@ -68,8 +71,14 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        String token = jwtUtil.generateToken(user.getUsername(), roles);
+        String token = jwtTokenProvider.generateToken(user.getUsername(), roles);
         log.info("JWT token generated for user: {} with roles: {}", maskUsername(user.getUsername()), roles);
         return token;
+    }
+
+    public void handleLogout(String token) {
+        long ttl = jwtTokenProvider.getExpiresAt(token).getTime() - System.currentTimeMillis();
+        tokenBlacklistService.blacklist(token, ttl);
+        log.info("Token has been blacklisted, TTL: {} ms", ttl);
     }
 }
