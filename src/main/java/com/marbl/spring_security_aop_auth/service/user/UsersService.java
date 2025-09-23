@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -24,7 +25,7 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final RolesRepository rolesRepository;
 
-
+    @Transactional
     public void registerUser(@Valid RegisterUserDto registerUserDto) {
         boolean exists = usersRepository.existsByUsernameOrEmail(registerUserDto.getUsername(), registerUserDto.getEmail());
         log.info("Checking registration for username: {}, exists: {}", registerUserDto.getUsername(), exists);

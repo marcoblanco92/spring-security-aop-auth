@@ -1,5 +1,6 @@
 package com.marbl.spring_security_aop_auth.utils;
 
+import com.marbl.spring_security_aop_auth.dto.auth.BaseAuthRequestDto;
 import com.marbl.spring_security_aop_auth.dto.auth.LoginRequestDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public final class PrivacyUtils {
         return maskedName + "@" + domain;
     }
 
-    public static String maskSensitive(LoginRequestDto dto) {
+    public static String maskSensitive(BaseAuthRequestDto dto) {
         if (dto.getEmail() != null) return maskEmail(dto.getEmail());
         if (dto.getUsername() != null) return maskUsername(dto.getUsername());
         return "unknown";

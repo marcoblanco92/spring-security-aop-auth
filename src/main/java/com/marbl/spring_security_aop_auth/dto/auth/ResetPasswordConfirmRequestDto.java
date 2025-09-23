@@ -1,8 +1,6 @@
 package com.marbl.spring_security_aop_auth.dto.auth;
 
-import com.marbl.spring_security_aop_auth.annotation.ExactlyOneField;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -14,8 +12,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDto extends BaseAuthRequestDto {
+public class ResetPasswordConfirmRequestDto {
 
+    @NotBlank(message = "Token is required")
+    private String token;
 
     @NotBlank(message = "Password is required")
     @Pattern(
@@ -24,6 +24,4 @@ public class LoginRequestDto extends BaseAuthRequestDto {
     )
     @Schema(description = "Password of the new user", example = "P@ssw0rd123")
     private String password;
-
-
 }

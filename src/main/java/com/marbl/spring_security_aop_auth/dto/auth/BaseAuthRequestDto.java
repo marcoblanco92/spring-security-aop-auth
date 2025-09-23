@@ -12,18 +12,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@ExactlyOneField
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDto extends BaseAuthRequestDto {
+public class BaseAuthRequestDto {
 
+    @Schema(description = "Username of the user", example = "marcoblanco")
+    private String username;
 
-    @NotBlank(message = "Password is required")
-    @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$",
-            message = "Password must be at least 8 characters long, contain uppercase, lowercase, number, and special character"
-    )
-    @Schema(description = "Password of the new user", example = "P@ssw0rd123")
-    private String password;
-
-
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Schema(description = "Email of the user", example = "marco@example.com")
+    private String email;
 }
