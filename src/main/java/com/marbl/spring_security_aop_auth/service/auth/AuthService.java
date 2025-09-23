@@ -1,6 +1,6 @@
 package com.marbl.spring_security_aop_auth.service.auth;
 
-import com.marbl.spring_security_aop_auth.dto.user.LoginRequestDto;
+import com.marbl.spring_security_aop_auth.dto.auth.LoginRequestDto;
 import com.marbl.spring_security_aop_auth.entity.user.Users;
 import com.marbl.spring_security_aop_auth.repository.user.UsersRepository;
 import com.marbl.spring_security_aop_auth.utils.jwt.JwtUtil;
@@ -33,7 +33,7 @@ public class AuthService {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
             );
-            log.info("Login successful for user/email: {}", maskSensitive(loginRequestDto));
+            log.info("Authentication successful for user/email: {}", maskSensitive(loginRequestDto));
             resetFailedAttempts(loginRequestDto);
             return (UserDetails) authentication.getPrincipal();
         } catch (BadCredentialsException ex) {

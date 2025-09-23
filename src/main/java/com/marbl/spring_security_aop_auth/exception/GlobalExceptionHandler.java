@@ -21,12 +21,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
+
         ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
+            String fieldName;
+            String errorMessage = error.getDefaultMessage();
+
+            if (error instanceof FieldError fieldError) {
+                fieldName = fieldError.getField();
+            } else {
+                // For class-level constraints (like @ExactlyOneField)
+                fieldName = error.getObjectName();
+            }
+
+            errors.put(fieldName, errorMessage);
         });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.badRequest().body(errors);
     }
 
 }

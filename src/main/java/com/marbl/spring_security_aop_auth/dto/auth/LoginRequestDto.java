@@ -1,6 +1,6 @@
-package com.marbl.spring_security_aop_auth.dto.user;
+package com.marbl.spring_security_aop_auth.dto.auth;
 
-import com.marbl.spring_security_aop_auth.annotation.AtLeastOneField;
+import com.marbl.spring_security_aop_auth.annotation.ExactlyOneField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AtLeastOneField
+@ExactlyOneField
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequestDto {

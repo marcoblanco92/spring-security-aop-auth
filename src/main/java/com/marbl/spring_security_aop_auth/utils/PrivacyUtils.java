@@ -1,6 +1,6 @@
 package com.marbl.spring_security_aop_auth.utils;
 
-import com.marbl.spring_security_aop_auth.dto.user.LoginRequestDto;
+import com.marbl.spring_security_aop_auth.dto.auth.LoginRequestDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

@@ -1,6 +1,6 @@
 package com.marbl.spring_security_aop_auth.controller.auth;
 
-import com.marbl.spring_security_aop_auth.dto.user.LoginRequestDto;
+import com.marbl.spring_security_aop_auth.dto.auth.LoginRequestDto;
 import com.marbl.spring_security_aop_auth.model.auth.LoginResponse;
 import com.marbl.spring_security_aop_auth.service.auth.AuthService;
 import com.marbl.spring_security_aop_auth.utils.PrivacyUtils;
@@ -42,7 +42,7 @@ public class AuthController {
         UserDetails userDetails = authService.authenticate(loginRequestDto);
         String token = authService.generateJwtToken(userDetails);
 
-        return ResponseEntity.ok(new LoginResponse(token, jwtUtil.getExpiresAt(token)));
+        return ResponseEntity.ok(new LoginResponse(token, "Bearer", jwtUtil.getExpiresAt(token)));
     }
 
 }
