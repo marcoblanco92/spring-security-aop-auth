@@ -1,7 +1,7 @@
 package com.marbl.spring_security_aop_auth.configuration;
 
-import com.marbl.spring_security_aop_auth.component.JwtAuthenticationFilter;
-import com.marbl.spring_security_aop_auth.component.JwtRefreshFilter;
+import com.marbl.spring_security_aop_auth.component.filter.JwtAuthenticationFilter;
+import com.marbl.spring_security_aop_auth.component.filter.JwtRefreshFilter;
 import com.marbl.spring_security_aop_auth.service.blacklist.TokenBlacklistService;
 import com.marbl.spring_security_aop_auth.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;

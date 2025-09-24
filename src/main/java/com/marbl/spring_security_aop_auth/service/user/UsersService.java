@@ -8,12 +8,15 @@ import com.marbl.spring_security_aop_auth.exception.UserAlreadyExistsException;
 import com.marbl.spring_security_aop_auth.mapper.user.UsersMapper;
 import com.marbl.spring_security_aop_auth.repository.role.RolesRepository;
 import com.marbl.spring_security_aop_auth.repository.user.UsersRepository;
+import com.marbl.spring_security_aop_auth.utils.PrivacyUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.marbl.spring_security_aop_auth.utils.PrivacyUtils.maskUsername;
 
 @Slf4j
 @Service
@@ -28,7 +31,7 @@ public class UsersService {
     @Transactional
     public void registerUser(@Valid RegisterUserDto registerUserDto) {
         boolean exists = usersRepository.existsByUsernameOrEmail(registerUserDto.getUsername(), registerUserDto.getEmail());
-        log.info("Checking registration for username: {}, exists: {}", registerUserDto.getUsername(), exists);
+        log.info("Checking registration for username: {}, exists: {}", maskUsername(registerUserDto.getUsername()), exists);
 
         if (exists) {
             log.warn("Attempt to register already existing user: {}", registerUserDto.getUsername());

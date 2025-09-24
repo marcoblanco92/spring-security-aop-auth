@@ -1,4 +1,4 @@
-package com.marbl.spring_security_aop_auth.component;
+package com.marbl.spring_security_aop_auth.component.filter;
 
 import com.marbl.spring_security_aop_auth.mapper.auth.JwtAuthenticationToken;
 import com.marbl.spring_security_aop_auth.utils.jwt.JwtTokenProvider;
