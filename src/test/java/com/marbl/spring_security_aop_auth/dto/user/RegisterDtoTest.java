@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RegisterUserDtoTest {
+class RegisterDtoTest {
 
     private static Validator validator;
 
@@ -23,26 +23,26 @@ class RegisterUserDtoTest {
 
     @Test
     void whenValidDto_thenNoViolations() {
-        RegisterUserDto dto = new RegisterUserDto(
+        RegisterDto dto = new RegisterDto(
                 "marco",
                 "Password1!",
                 "marco@example.com"
         );
 
-        Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
+        Set<ConstraintViolation<RegisterDto>> violations = validator.validate(dto);
 
         assertThat(violations).isEmpty();
     }
 
     @Test
     void whenPasswordTooWeak_thenViolation() {
-        RegisterUserDto dto = new RegisterUserDto(
+        RegisterDto dto = new RegisterDto(
                 "marco",
                 "password", // no uppercase, no digit, no special char
                 "marco@example.com"
         );
 
-        Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
+        Set<ConstraintViolation<RegisterDto>> violations = validator.validate(dto);
 
         assertThat(violations)
                 .anyMatch(v -> v.getPropertyPath().toString().equals("password"));
@@ -50,13 +50,13 @@ class RegisterUserDtoTest {
 
     @Test
     void whenEmailInvalid_thenViolation() {
-        RegisterUserDto dto = new RegisterUserDto(
+        RegisterDto dto = new RegisterDto(
                 "marco",
                 "Password1!",
                 "not-an-email"
         );
 
-        Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
+        Set<ConstraintViolation<RegisterDto>> violations = validator.validate(dto);
 
         assertThat(violations)
                 .anyMatch(v -> v.getPropertyPath().toString().equals("email"));
@@ -64,13 +64,13 @@ class RegisterUserDtoTest {
 
     @Test
     void whenUsernameBlank_thenViolation() {
-        RegisterUserDto dto = new RegisterUserDto(
+        RegisterDto dto = new RegisterDto(
                 "",
                 "Password1!",
                 "marco@example.com"
         );
 
-        Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
+        Set<ConstraintViolation<RegisterDto>> violations = validator.validate(dto);
 
         assertThat(violations)
                 .anyMatch(v -> v.getPropertyPath().toString().equals("username"));

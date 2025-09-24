@@ -1,6 +1,5 @@
 package com.marbl.spring_security_aop_auth.dto.auth;
 
-import com.marbl.spring_security_aop_auth.annotation.ExactlyOneField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

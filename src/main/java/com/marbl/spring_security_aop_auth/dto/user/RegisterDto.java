@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterUserDto {
+public class RegisterDto {
 
     @NotBlank(message = "Username is required")
     @Schema(description = "Username of the new user", example = "marcoblanco")
@@ -31,4 +31,5 @@ public class RegisterUserDto {
     @Email(message = "Invalid email format")
     @Schema(description = "Email of the new user", example = "marco@example.com")
     private String email;
+
 }

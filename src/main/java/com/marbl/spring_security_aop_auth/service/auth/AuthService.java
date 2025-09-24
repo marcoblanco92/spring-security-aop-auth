@@ -91,7 +91,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void handleChangePassword(@Valid ChangePasswordRequestDto changePasswordRequest) throws BadRequestException {
+    public void changePassword(ChangePasswordRequestDto changePasswordRequest) throws BadRequestException {
         log.info("Change password attempt for user/email: {}", maskSensitive(changePasswordRequest));
 
         Users user = usersRepository.findByUsernameOrEmail(changePasswordRequest.getUsername(), changePasswordRequest.getEmail())

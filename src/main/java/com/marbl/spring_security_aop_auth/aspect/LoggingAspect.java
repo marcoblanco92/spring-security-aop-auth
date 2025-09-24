@@ -38,16 +38,16 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().toShortString();
         Object[] args = joinPoint.getArgs();
 
-        log.info("Entering {} | args: {}", methodName, Arrays.toString(args));
+        log.info("Entering {} | args: {} | correlationId={}", methodName, Arrays.toString(args), correlationId);
 
         Object result;
         try {
             result = joinPoint.proceed();
             long duration = System.currentTimeMillis() - start;
-            log.info("Exiting {} | result: {} | duration={}ms ", methodName, result, duration);
+            log.info("Exiting {} | result: {} | duration={}ms | correlationId={}", methodName, result, duration, correlationId);
         } catch (Throwable t) {
             long duration = System.currentTimeMillis() - start;
-            log.error("Exception in {} | message: {} | duration={}ms ", methodName, t.getMessage(), duration, t);
+            log.error("Exception in {} | message: {} | duration={}ms | correlationId={}", methodName, t.getMessage(), duration, correlationId, t);
             throw t;
         } finally {
             // Important: clear the MDC to avoid leaking values across threads

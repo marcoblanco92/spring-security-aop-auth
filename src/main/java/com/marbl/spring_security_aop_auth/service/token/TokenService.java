@@ -40,7 +40,7 @@ public class TokenService {
     }
 
     @Transactional
-    public void handleResetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
+    public void resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
         log.info("Hard reset password for email user: {}", maskEmail(resetPasswordRequestDto.getEmail()));
         Users users = usersRepository.findByUsernameOrEmail(null, resetPasswordRequestDto.getEmail()).orElse(null);
 
@@ -71,7 +71,7 @@ public class TokenService {
     }
 
     @Transactional
-    public void handleResetPasswordConfirm(ResetPasswordConfirmRequestDto resetPasswordConfirmRequestDto) throws BadRequestException {
+    public void confirmResetPassword(ResetPasswordConfirmRequestDto resetPasswordConfirmRequestDto) throws BadRequestException {
         log.info("Starting reset password confirmation");
 
         String tokenHash = DigestUtils.sha256Hex(resetPasswordConfirmRequestDto.getToken());

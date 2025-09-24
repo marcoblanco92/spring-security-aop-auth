@@ -1,9 +1,9 @@
 package com.marbl.spring_security_aop_auth.controller.user;
 
 import com.marbl.spring_security_aop_auth.controller.BaseController;
-import com.marbl.spring_security_aop_auth.dto.user.RegisterUserDto;
+import com.marbl.spring_security_aop_auth.dto.user.RegisterDto;
+import com.marbl.spring_security_aop_auth.entity.role.RolesEnum;
 import com.marbl.spring_security_aop_auth.service.user.UsersService;
-import com.marbl.spring_security_aop_auth.utils.PrivacyUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.marbl.spring_security_aop_auth.utils.PrivacyUtils.maskEmail;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -32,13 +34,10 @@ public class UsersController extends BaseController {
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Created", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Conflict", content = {@Content(mediaType = "application/json", schema = @Schema(example = "Error message"))}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(example = "Error message")))})
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody RegisterDto registerUserDto) {
 
-        // Log request safely
-        String maskedEmail = PrivacyUtils.maskEmail(registerUserDto.getEmail());
-        log.info("Registering new user: {}, email: {}", registerUserDto.getUsername(), maskedEmail);
-
-        usersService.registerUser(registerUserDto);
+        log.info("Registering new user: {}, email: {} for role: {}", registerUserDto.getUsername(), maskEmail(registerUserDto.getEmail()), RolesEnum.ROLE_USER);
+        usersService.register(registerUserDto, RolesEnum.ROLE_USER);
 
         return ResponseEntity.status(HttpStatus.CREATED).build(); // 201 Created, no body
     }

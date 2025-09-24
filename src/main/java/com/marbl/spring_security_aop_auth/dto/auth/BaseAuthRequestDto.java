@@ -4,7 +4,6 @@ import com.marbl.spring_security_aop_auth.annotation.ExactlyOneField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ public class BaseAuthRequestDto {
     @Schema(description = "Username of the user", example = "marcoblanco")
     private String username;
 
-    @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     @Schema(description = "Email of the user", example = "marco@example.com")
     private String email;

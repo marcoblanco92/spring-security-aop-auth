@@ -60,7 +60,7 @@ public class AuthController extends BaseController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = {@Content(mediaType = "application/json", schema = @Schema(example = "Error message"))}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(example = "Error message")))})
     public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequestDto changePasswordRequestDto) throws BadRequestException {
-        authService.handleChangePassword(changePasswordRequestDto);
+        authService.changePassword(changePasswordRequestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -70,7 +70,7 @@ public class AuthController extends BaseController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = {@Content(mediaType = "application/json", schema = @Schema(example = "Error message"))}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(example = "Error message")))})
     public ResponseEntity<MessageResponse> resetPassword(@Valid @RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
-        tokenService.handleResetPassword(resetPasswordRequestDto);
+        tokenService.resetPassword(resetPasswordRequestDto);
         return ResponseEntity.ok(new MessageResponse("If the email exists, a reset link has been sent"));
     }
 
@@ -80,7 +80,7 @@ public class AuthController extends BaseController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = {@Content(mediaType = "application/json", schema = @Schema(example = "Error message"))}),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(example = "Error message")))})
     public ResponseEntity<Void> resetPasswordConfirm(@Valid @RequestBody ResetPasswordConfirmRequestDto resetPasswordConfirmRequestDto) throws BadRequestException {
-        tokenService.handleResetPasswordConfirm(resetPasswordConfirmRequestDto);
+        tokenService.confirmResetPassword(resetPasswordConfirmRequestDto);
         return ResponseEntity.ok().build();
     }
 
