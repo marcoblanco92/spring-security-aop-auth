@@ -1,6 +1,7 @@
 package com.marbl.spring_security_aop_auth.configuration;
 
 import com.marbl.spring_security_aop_auth.component.JwtAuthenticationFilter;
+import com.marbl.spring_security_aop_auth.component.JwtRefreshFilter;
 import com.marbl.spring_security_aop_auth.service.blacklist.TokenBlacklistService;
 import com.marbl.spring_security_aop_auth.utils.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -51,13 +52,19 @@ public class SecurityConfig {
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtRefreshFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtTokenProvider, tokenBlacklistService);
+    }
+
+    @Bean
+    public JwtRefreshFilter jwtRefreshFilter() {
+        return new JwtRefreshFilter(jwtTokenProvider);
     }
 
 }

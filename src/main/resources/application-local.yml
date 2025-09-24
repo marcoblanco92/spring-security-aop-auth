@@ -9,6 +9,10 @@ JWT_SECRET: 649cd3fa8b0349001f6bbd69f1dcbbfa25b098bb7bd95b4d9a36688dcf7a0556
 
 KAFKA_HOST: localhost:9092
 
+JWT_EXPIRATION_FIRST_LOGIN: 3600000          # 1 hour in ms
+JWT_THRESHOLD_MIN_MS_FOR_REFRESH: 86400000          # 1 day in ms
+JWT_REFRESH_EXPIRATION: 2592000000          # 30 days in ms
+
 spring:
   jpa:
     hibernate:

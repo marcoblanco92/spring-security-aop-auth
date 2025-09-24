@@ -27,7 +27,9 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  expiration-ms: 3600000      # 1 hour
+  expiration-ms: ${JWT_EXPIRATION_FIRST_LOGIN}
+  threshold-ms: ${JWT_THRESHOLD_MIN_MS_FOR_REFRESH}
+  refresh-ms: ${JWT_REFRESH_EXPIRATION}
 
 logging:
   level:
