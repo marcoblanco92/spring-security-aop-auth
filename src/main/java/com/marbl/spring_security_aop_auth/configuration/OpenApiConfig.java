@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
                 contact = @Contact(
                         name = "Marco Blanco",
                         email = "marcoblanco.dev@gmail.com",
-                        url = "https://github.com/TenpoDev"
+                        url = "https://github.com/marcoblanco92"
                 ),
                 description = "OpenApi documentation for MarBl spring-security-aop-auth Poc",
                 title = "Spring-Security-Aop-Auth Poc - MarBl",
