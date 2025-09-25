@@ -4,7 +4,7 @@ import com.marbl.spring_security_aop_auth.component.kafka.KafkaEmailProducer;
 import com.marbl.spring_security_aop_auth.dto.auth.ResetPasswordConfirmRequestDto;
 import com.marbl.spring_security_aop_auth.dto.auth.ResetPasswordRequestDto;
 import com.marbl.spring_security_aop_auth.entity.token.PasswordResetToken;
-import com.marbl.spring_security_aop_auth.entity.user.Users;
+import com.marbl.spring_security_aop_auth.entity.user.User;
 import com.marbl.spring_security_aop_auth.model.token.TokenPair;
 import com.marbl.spring_security_aop_auth.repository.token.PasswordResetTokenRepository;
 import com.marbl.spring_security_aop_auth.repository.user.UsersRepository;
@@ -42,15 +42,15 @@ public class TokenService {
     @Transactional
     public void resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
         log.info("Hard reset password for email user: {}", maskEmail(resetPasswordRequestDto.getEmail()));
-        Users users = usersRepository.findByUsernameOrEmail(null, resetPasswordRequestDto.getEmail()).orElse(null);
+        User user = usersRepository.findByEmail(resetPasswordRequestDto.getEmail()).orElse(null);
 
-        if (users == null) {
+        if (user == null || user.getPassword() == null) {
             log.warn("Reset password failed: user not found for email: {}", maskEmail(resetPasswordRequestDto.getEmail()));
             return;
         }
 
         List<PasswordResetToken> tokensToDisable = passwordResetTokenRepository
-                .findAllByUserAndUsedFalseAndExpiresAtAfter(users, LocalDateTime.now());
+                .findAllByUserAndUsedFalseAndExpiresAtAfter(user, LocalDateTime.now());
 
         tokensToDisable.forEach(t -> t.setUsed(true));
         passwordResetTokenRepository.saveAll(tokensToDisable);
@@ -58,7 +58,7 @@ public class TokenService {
         TokenPair tokenPair = TokenService.generateToken();
 
         PasswordResetToken newToken = PasswordResetToken.builder()
-                .user(users)
+                .user(user)
                 .tokenHash(tokenPair.tokenHash())
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
@@ -67,7 +67,7 @@ public class TokenService {
 
         passwordResetTokenRepository.save(newToken);
 
-        kafkaEmailProducer.sendEmail(KafkaEmailProducer.createEmailEvent(users, tokenPair));
+        kafkaEmailProducer.sendEmail(KafkaEmailProducer.createEmailEvent(user, tokenPair));
     }
 
     @Transactional
@@ -84,7 +84,7 @@ public class TokenService {
                     return new BadRequestException("Token invalid or expired");
                 });
 
-        Users user = token.getUser();
+        User user = token.getUser();
         log.info("Reset password confirmed for user: {}", maskEmail(user.getEmail()));
 
         if (passwordEncoder.matches(resetPasswordConfirmRequestDto.getPassword(), user.getPassword())) {

@@ -12,7 +12,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangePasswordRequestDto extends BaseAuthRequestDto {
+public class ChangePasswordRequestDto {
+
+    @NotBlank(message = "Username is required")
+    @Schema(description = "Username of the user", example = "marcoblanco")
+    private String username;
 
     @NotBlank(message = "Password is required")
     @Pattern(

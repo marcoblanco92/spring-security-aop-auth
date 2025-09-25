@@ -1,6 +1,6 @@
 package com.marbl.spring_security_aop_auth.component.kafka;
 
-import com.marbl.spring_security_aop_auth.entity.user.Users;
+import com.marbl.spring_security_aop_auth.entity.user.User;
 import com.marbl.spring_security_aop_auth.model.kafka.EmailEvent;
 import com.marbl.spring_security_aop_auth.model.token.TokenPair;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class KafkaEmailProducer {
         }
     }
 
-    public static EmailEvent createEmailEvent(Users users, TokenPair tokenPair) {
+    public static EmailEvent createEmailEvent(User user, TokenPair tokenPair) {
         return EmailEvent.builder()
-                .to(users.getEmail())
+                .to(user.getEmail())
                 .subject("Reset your password")
                 .body(buildResetPasswordBody(tokenPair.rawToken()))
                 .build();

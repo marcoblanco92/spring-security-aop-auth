@@ -1,9 +1,9 @@
 package com.marbl.spring_security_aop_auth.entity.user;
 
+import com.marbl.spring_security_aop_auth.entity.provider.UserAuthProvider;
 import com.marbl.spring_security_aop_auth.entity.role.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,35 +20,41 @@ import java.util.Set;
 @Data
 @Entity
 @Table(schema = "auth", name = "users")
-public class Users implements Serializable, UserDetails {
+public class User implements Serializable, UserDetails {
 
     private static final int MAX_FAILED_ATTEMPTS = 3;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false, updatable = false)
-    private String username;
-    @Column(unique = true)
+
     @Email(message = "Invalid email format")
-    private String email;
+    @Column(unique = true, nullable = false)
+    private String email; //required
+
+    @Column(unique = true)
+    private String username; //optional used for classic login
+
     @Column(name = "password_hash")
-    private String password;
+    private String password; // Nullable if OAuth
+
     @Column(nullable = false)
     private Boolean enabled = Boolean.TRUE;
+
     @Column(columnDefinition = "INTEGER DEFAULT 0")
     private int failedAttempts;
+
     private Timestamp lockedUntil;
-    @Enumerated(EnumType.STRING)
-    private AuthProvider provider;
-    private String providerId;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
+
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+    // === Relations ===
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
             schema = "auth",
@@ -58,6 +64,10 @@ public class Users implements Serializable, UserDetails {
     )
     private Set<Roles> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserAuthProvider> authProviders = new HashSet<>();
+
+    // === Methods UserDetails ===
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
@@ -66,22 +76,14 @@ public class Users implements Serializable, UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return this.failedAttempts <= MAX_FAILED_ATTEMPTS;
-    }
+    public boolean isAccountNonLocked() { return failedAttempts <= MAX_FAILED_ATTEMPTS; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return this.enabled;
-    }
+    public boolean isEnabled() { return enabled; }
 }

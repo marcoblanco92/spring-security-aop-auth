@@ -1,4 +1,4 @@
-package com.marbl.spring_security_aop_auth.entity.user;
+package com.marbl.spring_security_aop_auth.entity.provider;
 
 public enum AuthProvider {
     LOCAL,

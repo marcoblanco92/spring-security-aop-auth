@@ -6,7 +6,7 @@ import com.marbl.spring_security_aop_auth.dto.auth.ChangePasswordRequestDto;
 import com.marbl.spring_security_aop_auth.dto.auth.ResetPasswordConfirmRequestDto;
 import com.marbl.spring_security_aop_auth.dto.user.RegisterDto;
 import com.marbl.spring_security_aop_auth.entity.token.PasswordResetToken;
-import com.marbl.spring_security_aop_auth.entity.user.Users;
+import com.marbl.spring_security_aop_auth.entity.user.User;
 import com.marbl.spring_security_aop_auth.repository.token.PasswordResetTokenRepository;
 import com.marbl.spring_security_aop_auth.repository.user.UsersRepository;
 import com.marbl.spring_security_aop_auth.service.audit.AuditService;
@@ -68,7 +68,7 @@ public class AuditAspect {
                 var dto = (ChangePasswordRequestDto) args[0];
                 before = AuditDto.builder()
                         .correlationId(correlationId)
-                        .usernameOrEmail(Objects.nonNull(dto.getUsername()) ? dto.getUsername() : dto.getEmail())
+                        .usernameOrEmail(dto.getUsername())
                         .passwordHashBefore(passwordEncoder.encode(dto.getNewPassword()))
                         .action(methodName)
                         .build();
@@ -99,7 +99,7 @@ public class AuditAspect {
         switch (methodName) {
             case "register" -> {
                 var dto = (RegisterDto) joinPoint.getArgs()[0];
-                Users user = usersRepository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail()).orElse(null);
+                User user = usersRepository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail()).orElse(null);
                 if (user == null) {
                     break;
                 }
@@ -112,7 +112,7 @@ public class AuditAspect {
             }
             case "changePassword" -> {
                 var dto = (ChangePasswordRequestDto) joinPoint.getArgs()[0];
-                Users user = usersRepository.findByUsernameOrEmail(dto.getUsername(), dto.getEmail()).orElse(null);
+                User user = usersRepository.findByUsername(dto.getUsername()).orElse(null);
                 if (user == null) {
                     break;
                 }
@@ -125,7 +125,7 @@ public class AuditAspect {
             }
             case "confirmResetPassword" -> {
                 var dto2 = (ResetPasswordConfirmRequestDto) joinPoint.getArgs()[0];
-                Users user = passwordResetTokenRepository
+                User user = passwordResetTokenRepository
                         .findByTokenHashAndUsedTrue(DigestUtils.sha256Hex(dto2.getToken()))
                         .map(PasswordResetToken::getUser)
                         .orElse(null);

@@ -3,7 +3,7 @@ package com.marbl.spring_security_aop_auth.service.user;
 import com.marbl.spring_security_aop_auth.dto.user.RegisterDto;
 import com.marbl.spring_security_aop_auth.entity.role.Roles;
 import com.marbl.spring_security_aop_auth.entity.role.RolesEnum;
-import com.marbl.spring_security_aop_auth.entity.user.Users;
+import com.marbl.spring_security_aop_auth.entity.user.User;
 import com.marbl.spring_security_aop_auth.exception.UserAlreadyExistsException;
 import com.marbl.spring_security_aop_auth.mapper.user.UsersMapper;
 import com.marbl.spring_security_aop_auth.repository.role.RolesRepository;
@@ -33,13 +33,13 @@ public class UsersService {
 
         if (exists) {
             log.warn("Attempt to register already existing user: {}", registerBaseDto.getUsername());
-            throw new UserAlreadyExistsException("Username or email already in use");
+            throw new UserAlreadyExistsException("Invalid username or password");
         }
 
-        Users users = usersMapper.toEntity(registerBaseDto);
-        users.setPassword(passwordEncoder.encode(registerBaseDto.getPassword()));
-        users.getRoles().add(findUserRole(rolesEnum));
-        usersRepository.save(users);
+        User user = usersMapper.toEntity(registerBaseDto);
+        user.setPassword(passwordEncoder.encode(registerBaseDto.getPassword()));
+        user.getRoles().add(findUserRole(rolesEnum));
+        usersRepository.save(user);
         log.info("User {} successfully registered", registerBaseDto.getUsername());
     }
 

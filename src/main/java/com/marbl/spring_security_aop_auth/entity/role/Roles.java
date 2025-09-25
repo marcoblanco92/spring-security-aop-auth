@@ -1,24 +1,26 @@
 package com.marbl.spring_security_aop_auth.entity.role;
 
-import com.marbl.spring_security_aop_auth.entity.user.Users;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(schema = "auth",name = "roles")
+@NoArgsConstructor
+@Table(schema = "auth", name = "roles")
 public class Roles implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true, nullable = false, name = "name")
+    @Column(name = "role_name", unique = true, nullable = false)
     private RolesEnum roleName;
 
 }

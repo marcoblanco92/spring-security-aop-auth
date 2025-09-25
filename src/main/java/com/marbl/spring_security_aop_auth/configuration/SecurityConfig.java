@@ -1,11 +1,11 @@
 package com.marbl.spring_security_aop_auth.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marbl.spring_security_aop_auth.component.Oauth2UserService;
+import com.marbl.spring_security_aop_auth.component.oauth.Oauth2Service;
 import com.marbl.spring_security_aop_auth.component.filter.JwtAuthenticationFilter;
 import com.marbl.spring_security_aop_auth.component.filter.JwtRefreshFilter;
-import com.marbl.spring_security_aop_auth.entity.user.AuthProvider;
-import com.marbl.spring_security_aop_auth.entity.user.Users;
+import com.marbl.spring_security_aop_auth.entity.provider.AuthProvider;
+import com.marbl.spring_security_aop_auth.entity.user.User;
 import com.marbl.spring_security_aop_auth.model.auth.LoginResponse;
 import com.marbl.spring_security_aop_auth.service.blacklist.TokenBlacklistService;
 import com.marbl.spring_security_aop_auth.utils.jwt.JwtTokenProvider;
@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenBlacklistService tokenBlacklistService;
     private final AuthenticationProvider authenticationProvider;
-    private final Oauth2UserService oauth2UserService;
+    private final Oauth2Service oauth2Service;
 
     @Bean
     @Order(1)
@@ -86,8 +86,8 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(
                                 (request, response, authentication) -> {
-                                    Users users = oauth2UserService.processOauthPostLogin((OAuth2User) authentication.getPrincipal(), AuthProvider.GOOGLE);
-                                    String jwt = jwtTokenProvider.generateToken(users.getUsername(), users.getRoles().stream().map(roles -> roles.getRoleName().name()).toList(), 3600000);
+                                    User user = oauth2Service.processOauthPostLogin((OAuth2User) authentication.getPrincipal(), AuthProvider.GOOGLE);
+                                    String jwt = jwtTokenProvider.generateToken(user.getUsername(), user.getRoles().stream().map(roles -> roles.getRoleName().name()).toList(), 3600000);
 
                                     LoginResponse loginResponse = new LoginResponse(jwt, "Bearer", jwtTokenProvider.getExpiresAt(jwt));
 

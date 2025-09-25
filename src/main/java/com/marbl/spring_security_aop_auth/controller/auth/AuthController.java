@@ -45,8 +45,7 @@ public class AuthController extends BaseController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(example = "Error message")))})
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
 
-        String maskedEmail = PrivacyUtils.maskEmail(loginRequestDto.getEmail());
-        log.info("Attempting login for user: {} email:{}", loginRequestDto.getUsername(), maskedEmail);
+        log.info("Attempting login for user: {}", PrivacyUtils.maskUsername(loginRequestDto.getUsername()));
 
         UserDetails userDetails = authService.authenticate(loginRequestDto);
         String token = authService.generateJwtToken(userDetails);

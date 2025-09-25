@@ -2,11 +2,10 @@ package com.marbl.spring_security_aop_auth.service.auth;
 
 import com.marbl.spring_security_aop_auth.dto.auth.ChangePasswordRequestDto;
 import com.marbl.spring_security_aop_auth.dto.auth.LoginRequestDto;
-import com.marbl.spring_security_aop_auth.entity.user.Users;
+import com.marbl.spring_security_aop_auth.entity.user.User;
 import com.marbl.spring_security_aop_auth.repository.user.UsersRepository;
 import com.marbl.spring_security_aop_auth.service.blacklist.TokenBlacklistService;
 import com.marbl.spring_security_aop_auth.utils.jwt.JwtTokenProvider;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -44,18 +43,18 @@ public class AuthService {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword())
             );
-            log.info("Authentication successful for user/email: {}", maskSensitive(loginRequestDto));
+            log.info("Authentication successful for user: {}", maskUsername(loginRequestDto.getUsername()));
             resetFailedAttempts(loginRequestDto);
             return (UserDetails) authentication.getPrincipal();
         } catch (BadCredentialsException ex) {
-            log.warn("Login failed for user/email: {}", maskSensitive(loginRequestDto));
+            log.warn("Login failed for user/email: {}", maskUsername(loginRequestDto.getUsername()));
             increaseFailedAttempts(loginRequestDto);
             throw ex; //error managed from SecurityExceptionHandler
         }
     }
 
     private void increaseFailedAttempts(LoginRequestDto loginRequestDto) {
-        Users user = usersRepository.findByUsernameOrEmail(loginRequestDto.getUsername(), loginRequestDto.getEmail())
+        User user = usersRepository.findByUsername(loginRequestDto.getUsername())
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
 
         int newAttempts = user.getFailedAttempts() + 1;
@@ -65,7 +64,7 @@ public class AuthService {
     }
 
     private void resetFailedAttempts(LoginRequestDto loginRequestDto) {
-        Users user = usersRepository.findByUsernameOrEmail(loginRequestDto.getUsername(), loginRequestDto.getEmail())
+        User user = usersRepository.findByUsername(loginRequestDto.getUsername())
                 .orElseThrow(() -> new BadCredentialsException("User not found"));
 
         if (user.getFailedAttempts() > 0) {
@@ -92,11 +91,11 @@ public class AuthService {
 
     @Transactional
     public void changePassword(ChangePasswordRequestDto changePasswordRequest) throws BadRequestException {
-        log.info("Change password attempt for user/email: {}", maskSensitive(changePasswordRequest));
+        log.info("Change password attempt for user: {}", maskUsername(changePasswordRequest.getUsername()));
 
-        Users user = usersRepository.findByUsernameOrEmail(changePasswordRequest.getUsername(), changePasswordRequest.getEmail())
+        User user = usersRepository.findByUsername(changePasswordRequest.getUsername())
                 .orElseThrow(() -> {
-                    log.warn("Change password failed: user not found for username/email: {}", maskSensitive(changePasswordRequest));
+                    log.warn("Change password failed: user not found for username/email: {}", maskUsername(changePasswordRequest.getUsername()));
                     return new UsernameNotFoundException("User not found");
                 });
 
