@@ -47,6 +47,30 @@ services:
     volumes:
       - kafka-data:/var/lib/kafka/data
 
+  app:
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - zookeeper
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_HOST=${KAFKA_HOST}
+      - JWT_EXPIRATION_FIRST_LOGIN=${JWT_EXPIRATION_FIRST_LOGIN}
+      - JWT_THRESHOLD_MIN_MS_FOR_REFRESH=${JWT_THRESHOLD_MIN_MS_FOR_REFRESH}
+      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
+      - POSTGRES_URL=${POSTGRES_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
 volumes:
   pgdata:
   redisdata:

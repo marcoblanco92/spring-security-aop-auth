@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -33,20 +32,16 @@ public class Users implements Serializable, UserDetails {
     @Column(unique = true)
     @Email(message = "Invalid email format")
     private String email;
-    @Column(name = "password_hash", nullable = false)
-    @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$",
-            message = "Password must be at least 8 characters long, contain uppercase, lowercase, number, and special character"
-    )
+    @Column(name = "password_hash")
     private String password;
     @Column(nullable = false)
     private Boolean enabled = Boolean.TRUE;
     @Column(columnDefinition = "INTEGER DEFAULT 0")
     private int failedAttempts;
     private Timestamp lockedUntil;
-    private String oauthProvider;
-    private String oauthId;
-    private String oauthSecret;
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+    private String providerId;
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
@@ -54,7 +49,7 @@ public class Users implements Serializable, UserDetails {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
             schema = "auth",
             name = "user_roles",
