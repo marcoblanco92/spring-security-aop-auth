@@ -3,6 +3,7 @@
     <option name="ACTIVE_PROFILES" value="local" />
     <module name="spring-security-aop-auth" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.marbl.spring_security_aop_auth.SpringSecurityAopAuthApplication" />
+    <option name="VM_PARAMETERS" value="-DGOOGLE_CLIENT_ID=464069987602-2fq1skv4harbjec8mp9q123itkgnresj.apps.googleusercontent.com -DGOOGLE_SECRET_ID=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" />
     <method v="2">
       <option name="Make" enabledg="true" />
     </method>
