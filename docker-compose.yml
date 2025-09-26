@@ -47,31 +47,59 @@ services:
     volumes:
       - kafka-data:/var/lib/kafka/data
 
-#  app:
-#    depends_on:
-#      - postgres
-#      - redis
-#      - kafka
-#      - zookeeper
-#    build: .
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-#      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-#      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-#      - REDIS_HOST=${REDIS_HOST}
-#      - REDIS_PORT=${REDIS_PORT}
-#      - JWT_SECRET=${JWT_SECRET}
-#      - KAFKA_HOST=${KAFKA_HOST}
-#      - JWT_EXPIRATION_FIRST_LOGIN=${JWT_EXPIRATION_FIRST_LOGIN}
-#      - JWT_THRESHOLD_MIN_MS_FOR_REFRESH=${JWT_THRESHOLD_MIN_MS_FOR_REFRESH}
-#      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
-#      - POSTGRES_URL=${POSTGRES_URL}
-#      - POSTGRES_USER=${POSTGRES_USER}
-#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  marbl-auth-service:
+    container_name: marbl-auth-service
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - zookeeper
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_SECRET_ID=${GOOGLE_SECRET_ID}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_HOST=${KAFKA_HOST}
+      - JWT_EXPIRATION_FIRST_LOGIN=${JWT_EXPIRATION_FIRST_LOGIN}
+      - JWT_THRESHOLD_MIN_MS_FOR_REFRESH=${JWT_THRESHOLD_MIN_MS_FOR_REFRESH}
+      - JWT_REFRESH_EXPIRATION=${JWT_REFRESH_EXPIRATION}
+      - POSTGRES_URL=${POSTGRES_URL}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - marbl-auth-service
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-data:/var/lib/grafana
 
 volumes:
   pgdata:
   redisdata:
   kafka-data:
+  grafana-data:

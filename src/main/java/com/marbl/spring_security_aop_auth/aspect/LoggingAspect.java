@@ -1,5 +1,8 @@
 package com.marbl.spring_security_aop_auth.aspect;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,7 +17,10 @@ import java.util.UUID;
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class LoggingAspect {
+
+    private final MeterRegistry meterRegistry;
 
     @Pointcut("within(@org.springframework.stereotype.Service *)")
     public void serviceMethods() {
@@ -29,31 +35,38 @@ public class LoggingAspect {
     }
 
     @Around("serviceOrControllerMethods()")
-    public Object logExecution(ProceedingJoinPoint joinPoint) throws Throwable {
-        long start = System.currentTimeMillis();
-
-        // Retrieve existing correlationId (e.g., from HTTP filter) or generate a new one
+    public Object logAndMeasure(ProceedingJoinPoint joinPoint) throws Throwable {
+        // Retrieve or generate correlationId
         String correlationId = MDC.get("correlationId");
+        if (correlationId == null) {
+            correlationId = UUID.randomUUID().toString();
+            MDC.put("correlationId", correlationId);
+        }
 
         String methodName = joinPoint.getSignature().toShortString();
         Object[] args = joinPoint.getArgs();
-
         log.info("Entering {} | args: {} | correlationId={}", methodName, Arrays.toString(args), correlationId);
 
-        Object result;
+        Timer.Sample sample = Timer.start(meterRegistry); // start Micrometer timer
+        Object result = null;
+
         try {
             result = joinPoint.proceed();
-            long duration = System.currentTimeMillis() - start;
-            log.info("Exiting {} | result: {} | duration={}ms | correlationId={}", methodName, result, duration, correlationId);
+            return result;
         } catch (Throwable t) {
-            long duration = System.currentTimeMillis() - start;
-            log.error("Exception in {} | message: {} | duration={}ms | correlationId={}", methodName, t.getMessage(), duration, correlationId, t);
+            log.error("Exception in {} | message: {} | correlationId={}", methodName, t.getMessage(), correlationId, t);
             throw t;
         } finally {
-            // Important: clear the MDC to avoid leaking values across threads
+            // Stop the timer and record in Micrometer/Prometheus
+            sample.stop(Timer.builder("method.execution.seconds")
+                    .description("Execution time of service/controller methods")
+                    .tag("method", joinPoint.getSignature().getName())
+                    .register(meterRegistry));
+
+            log.info("Exiting {} | result: {} | correlationId={}", methodName, result, correlationId);
+
+            // Clear MDC to avoid leaking values
             MDC.remove("correlationId");
         }
-
-        return result;
     }
 }

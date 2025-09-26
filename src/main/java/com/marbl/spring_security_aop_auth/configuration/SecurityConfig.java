@@ -37,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .securityMatcher("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/login/google")
+                .securityMatcher("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/login/google", "/actuator/prometheus")
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )

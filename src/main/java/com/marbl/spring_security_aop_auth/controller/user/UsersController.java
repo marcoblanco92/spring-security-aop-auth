@@ -3,6 +3,7 @@ package com.marbl.spring_security_aop_auth.controller.user;
 import com.marbl.spring_security_aop_auth.controller.BaseController;
 import com.marbl.spring_security_aop_auth.dto.user.RegisterDto;
 import com.marbl.spring_security_aop_auth.entity.role.RolesEnum;
+import com.marbl.spring_security_aop_auth.model.error.ErrorResponse;
 import com.marbl.spring_security_aop_auth.service.user.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,8 +33,8 @@ public class UsersController extends BaseController {
     @PostMapping
     @Operation(tags = "Users", description = "Register a new user", summary = "We are able to register a new user")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Created", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Conflict", content = {@Content(mediaType = "application/json", schema = @Schema(example = "Error message"))}),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(example = "Error message")))})
+            @ApiResponse(responseCode = "409", description = "Conflict", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))})
     public ResponseEntity<Void> registerUser(@Valid @RequestBody RegisterDto registerUserDto) {
 
         log.info("Registering new user: {}, email: {} for role: {}", registerUserDto.getUsername(), maskEmail(registerUserDto.getEmail()), RolesEnum.ROLE_USER);
