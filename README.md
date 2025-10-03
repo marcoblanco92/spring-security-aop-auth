@@ -1,6 +1,6 @@
 # spring-security-aop-auth
 
-**spring-security-aop-auth** è un progetto dimostrativo sviluppato con **Spring Boot**, **Spring Security**, **Spring Data**, **PostgreSQL** e **OAuth2**, pensato per illustrare best practice nella gestione di autenticazione, autorizzazione e sicurezza di API REST.
+**spring-security-aop-auth** è un progetto dimostrativo sviluppato con **Spring Boot**, **Spring Security**, **Spring Data**, **PostgreSQL** e **OAuth2**, pensato per applicare le best practice nella gestione di autenticazione, autorizzazione e sicurezza di API REST.
 
 ---
 
@@ -39,7 +39,7 @@
 - Java 17+
 - Spring Boot 3+
 - Spring Security 6+
-- Spring Batch
+- Spring Data
 - PostgreSQL
 - OAuth2 Client (Google)
 - Micrometer & Prometheus
