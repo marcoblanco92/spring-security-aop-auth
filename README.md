@@ -1,6 +1,6 @@
 # spring-security-aop-auth
 
-**spring-security-aop-auth** è un progetto dimostrativo sviluppato con **Spring Boot**, **Spring Security**, **Spring Batch**, **PostgreSQL** e **OAuth2**, pensato per illustrare best practice nella gestione di autenticazione, autorizzazione e sicurezza di API REST.
+**spring-security-aop-auth** è un progetto dimostrativo sviluppato con **Spring Boot**, **Spring Security**, **PostgreSQL** e **OAuth2**, pensato per illustrare best practice nella gestione di autenticazione, autorizzazione e sicurezza di API REST.
 
 ---
 
